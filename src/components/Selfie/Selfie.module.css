@@ -1,0 +1,21 @@
+.image {
+    width: 70px;
+    height: 100px;
+    object-fit: cover;
+}
+
+.item {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: space-between;
+    align-items: center;
+}
+
+.item * {
+    justify-self: center;
+}
+
+.item:not(:last-child) {
+    margin-bottom: 25px;
+}

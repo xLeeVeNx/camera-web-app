@@ -1,0 +1,21 @@
+.root {
+  font-weight: 500;
+  font-size: 12px;
+  line-height: 14px;
+  display: inline-block;
+  color: #fafafa;
+  border-radius: 14px;
+  padding: 6px 12px;
+  width: 30px;
+  text-align: center;
+}
+
+.low {
+  background-color: #aaaaaa;
+}
+.high {
+  background-color: #2ac178;
+}
+.medium {
+  background-color: #02c5e0;
+}

@@ -1,0 +1,33 @@
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    max-width: 120px;
+    height: 36px;
+    width: 100%;
+    background-color: #FAFAFA;
+    color: #444444;
+    border-radius: 100px;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+    border: none;
+    cursor: pointer;
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    z-index: 3;
+}
+
+.button.opened {
+    max-width: 36px;
+    padding: 0;
+}
+
+.button.opened img {
+    margin-right: 0;
+}
+
+.button img {
+    margin-right: 10px;
+}

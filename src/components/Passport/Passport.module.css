@@ -1,0 +1,26 @@
+.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 5px;
+}
+
+.sub_item {
+    font-feature-settings: 'liga' off;
+    text-align: left;
+    color: #FAFAFA;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.margin {
+    margin-bottom: 25px;
+}
+
+/*@media (max-width: 425px) {*/
+/*    .sub_item {*/
+/*        font-size: 12px;*/
+/*        line-height: 16px;*/
+/*    }*/
+/*}*/
