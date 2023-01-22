@@ -77,7 +77,7 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
       setLoading({status: true, text: 'Загружаем...'});
 
       const detections = await faceapi.detectAllFaces
-      (videoRef.current, new faceapi.TinyFaceDetectorOptions({
+      (videoRef.current.video, new faceapi.TinyFaceDetectorOptions({
         inputSize: 128,
         scoreThreshold: 0.3,
       }));

@@ -10,9 +10,6 @@
   border: 6px solid #139EEF;
   border-radius: 12px;
   margin: 0 auto;
-  transform: rotateY(180deg);
-  -webkit-transform:rotateY(180deg); /* Safari and Chrome */
-  -moz-transform:rotateY(180deg); /* Firefox */
 }
 
 @media (max-width: 768px) {

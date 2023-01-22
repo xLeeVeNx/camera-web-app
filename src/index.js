@@ -8,6 +8,12 @@ import {RootScreen} from './screens/RootScreen/RootScreen.jsx';
 import {PassportScreen} from './screens/PassportScreen/PassportScreen.jsx';
 import {PassportSelfieScreen} from './screens/PassportSelfieScreen/PassportSelfieScreen.jsx';
 import {PassportRegistrationSelfie} from './screens/PassportRegistrationSelfie/PassportRegistrationSelfie.jsx';
+import Webcam from 'react-webcam';
+
+const videoConstraints = {
+  facingMode: { exact: "environment" }
+};
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const router = createBrowserRouter([
@@ -32,8 +38,9 @@ const router = createBrowserRouter([
         element: <PassportSelfieScreen />,
       },
       {
-        path: "passport-registration-selfie",
-        element: <PassportRegistrationSelfie />,
+        path: "test",
+        element: <Webcam className="video" videoConstraints={videoConstraints}
+                         screenshotFormat="image/jpeg" autoPlay muted playsInline/>,
       },
     ]
   }
