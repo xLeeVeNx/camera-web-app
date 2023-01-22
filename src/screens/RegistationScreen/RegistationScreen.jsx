@@ -15,16 +15,10 @@ const videoConstraints = {
 
 const docType = 'passport_registration';
 
-export const RegistrationScreen = ({isActive}) => {
+export const RegistrationScreen = () => {
   const [result, setResult] = React.useState(null);
   const {setLoading} = useOutletContext();
   const webcamRef = React.useRef(null);
-
-  useEffect(() => {
-    if (isActive === false && webcamRef.current) {
-      webcamRef.current.unmounted = true;
-    }
-  }, []);
 
   const capture = React.useCallback(
     async () => {

@@ -12,6 +12,7 @@ export const PassportRegistrationSelfie = () => {
   const [selfieCheckDataToRequest, setSelfieCheckDataToRequest] = React.useState(null);
   const [result, setResult] = React.useState(null);
   const {setLoading} = useOutletContext();
+  const [activeIndex, setActiveIndex] = React.useState(0);
 
   useEffect(() => {
     const getResult = async () => {
@@ -32,21 +33,19 @@ export const PassportRegistrationSelfie = () => {
   }, [selfieCheckDataToRequest]);
 
   return (
-    <Swiper pagination={true} autoHeight observer observeParents modules={[Pagination]} className="mySwiper">
+    <Swiper pagination={true} autoHeight observer observeParents modules={[Pagination]} className="mySwiper"
+            onActiveIndexChange={({activeIndex}) => {
+              setActiveIndex(activeIndex);
+            }
+            }>
       <SwiperSlide>
-        {({isActive}) => (
-          <PassportScreen isActive={isActive} setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/>
-        )}
+        {activeIndex === 0 && <PassportScreen setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/> }
       </SwiperSlide>
       <SwiperSlide>
-        {({isActive}) => (
-          <RegistrationScreen isActive={isActive}/>
-        )}
+        {activeIndex === 1 && <RegistrationScreen/> }
       </SwiperSlide>
       <SwiperSlide>
-        {({ isActive }) => (
-          <SelfieScreen isActive={isActive} setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/>
-        )}
+        {activeIndex === 2 && <SelfieScreen setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/>}
       </SwiperSlide>
       {result && <SwiperSlide><SelfieCheck result={result}/></SwiperSlide>}
     </Swiper>

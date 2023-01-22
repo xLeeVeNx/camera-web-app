@@ -13,7 +13,7 @@ const videoConstraints = {
   facingMode: "user"
 };
 
-export const SelfieScreen = ({setSelfieCheckDataToRequest, isActive}) => {
+export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
   const [screenShots, setScreenShots] = React.useState([]);
   const [result, setResult] = React.useState(null);
   const {setLoading} = useOutletContext();
@@ -41,9 +41,6 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest, isActive}) => {
     return () => {
       clearInterval(screenShotIntervalId.current);
       clearInterval(faceDetectionIntervalId.current);
-      if (isActive === false && videoRef.current) {
-        videoRef.current.unmounted = true;
-      }
     };
   }, []);
   const loadModels = () => {
