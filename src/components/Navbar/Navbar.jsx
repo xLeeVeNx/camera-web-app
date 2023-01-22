@@ -23,11 +23,6 @@ const items = [
     title: 'Паспорт + прописка + селфи',
     to: '/passport-registration-selfie',
   },
-  {
-    id: 5,
-    title: 'Test',
-    to: '/test',
-  },
 ]
 
 export const Navbar = ({onItemClick, className, ...restProps}) => {

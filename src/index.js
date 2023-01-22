@@ -37,11 +37,6 @@ const router = createBrowserRouter([
         path: "passport-selfie",
         element: <PassportSelfieScreen />,
       },
-      {
-        path: "test",
-        element: <Webcam className="video" videoConstraints={videoConstraints}
-                         screenshotFormat="image/jpeg" autoPlay muted playsInline/>,
-      },
     ]
   }
 ]);

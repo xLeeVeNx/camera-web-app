@@ -22,6 +22,14 @@ export const RegistrationScreen = () => {
   const {setLoading} = useOutletContext();
   const webcamRef = React.useRef(null);
 
+  useEffect(() => {
+    return () => {
+      if (webcamRef.current) {
+        webcamRef.current.unmounted = true;
+      }
+    }
+  }, []);
+
   const capture = React.useCallback(
     async () => {
       setLoading({status: true, text: 'Распознаём...'});
@@ -40,7 +48,7 @@ export const RegistrationScreen = () => {
       {result ? <Passport fields={Mapper.mapRecognizedDataToItems(result.fields, docType)} docType={docType}/> : (
         <>
           <Webcam className="video" ref={webcamRef} videoConstraints={videoConstraints}
-                  screenshotFormat="image/jpeg"/>
+                  screenshotFormat="image/jpeg" mirrored/>
           <Button onClick={capture}><img src={circle} alt="Круг"/></Button>
         </>
       )}

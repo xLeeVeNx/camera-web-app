@@ -22,6 +22,14 @@ export const PassportScreen = ({setSelfieCheckDataToRequest}) => {
   const {setLoading} = useOutletContext();
   const webcamRef = React.useRef(null);
 
+  useEffect(() => {
+    return () => {
+      if (webcamRef.current) {
+        webcamRef.current.unmounted = true;
+      }
+    }
+  }, []);
+
   const capture = React.useCallback(
     async () => {
       setLoading({status: true, text: 'Распознаём...'});
@@ -41,7 +49,7 @@ export const PassportScreen = ({setSelfieCheckDataToRequest}) => {
       {result ? <Passport fields={Mapper.mapRecognizedDataToItems(result.fields, docType)} docType={docType}/> : (
         <>
           <Webcam className="video" ref={webcamRef} videoConstraints={videoConstraints}
-                  screenshotFormat="image/jpeg" autoPlay muted playsInline/>
+                  screenshotFormat="image/jpeg" autoPlay muted playsInline mirrored/>
           <Button onClick={capture}><img src={circle} alt="Круг"/></Button>
         </>
       )}

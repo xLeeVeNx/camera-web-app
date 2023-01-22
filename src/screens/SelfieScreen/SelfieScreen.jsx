@@ -25,7 +25,6 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
 
   useEffect(() => {
     videoRef && loadModels();
-
     screenShotIntervalId.current = setInterval(() => {
       const src = videoRef.current.getScreenshot();
       if (isFace.current) {
@@ -42,6 +41,9 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
     return () => {
       clearInterval(screenShotIntervalId.current);
       clearInterval(faceDetectionIntervalId.current);
+      if (videoRef.current) {
+        videoRef.current.unmounted = true;
+      }
     };
   }, []);
   const loadModels = () => {
@@ -114,7 +116,7 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
           ) : (
             <>
               <Webcam className="video" ref={videoRef} videoConstraints={videoConstraints}
-                      screenshotFormat="image/jpeg" autoPlay muted playsInline />
+                      screenshotFormat="image/jpeg" autoPlay muted playsInline mirrored />
               <Button onClick={capture}><img src={circle} alt="Круг"/></Button>
             </>
           )
