@@ -41,7 +41,7 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest, isActive}) => {
     return () => {
       clearInterval(screenShotIntervalId.current);
       clearInterval(faceDetectionIntervalId.current);
-      if (!isActive && videoRef.current) {
+      if (isActive === false && videoRef.current) {
         videoRef.current.unmounted = true;
       }
     };

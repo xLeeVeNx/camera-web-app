@@ -21,7 +21,7 @@ export const RegistrationScreen = ({isActive}) => {
   const webcamRef = React.useRef(null);
 
   useEffect(() => {
-    if (!isActive && webcamRef.current) {
+    if (isActive === false && webcamRef.current) {
       webcamRef.current.unmounted = true;
     }
   }, []);
