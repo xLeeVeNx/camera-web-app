@@ -1,8 +1,8 @@
 import React from 'react';
 import Webcam from 'react-webcam';
-import style from './PassportScreen.module.css';
+import style from './RegistationScreen.module.css';
 import {dataURLtoFile} from '../../utils/dataURLtoFile.js';
-import passport from '../../assets/images/passport.jpg';
+import propiska from '../../assets/images/propiska.jpg';
 import {Api} from '../../api/api.js';
 import {URLtoDataURL} from '../../utils/URLtoDataURL.js';
 import Passport from '../../components/Passport/Passport.jsx';
@@ -15,9 +15,9 @@ const videoConstraints = {
   facingMode: { exact: "environment" }
 };
 
-const docType = 'passport_main';
+const docType = 'passport_registration';
 
-export const PassportScreen = ({setSelfieCheckDataToRequest}) => {
+export const RegistrationScreen = () => {
   const [result, setResult] = React.useState(null);
   const {setLoading} = useOutletContext();
   const webcamRef = React.useRef(null);
@@ -27,18 +27,17 @@ export const PassportScreen = ({setSelfieCheckDataToRequest}) => {
     async () => {
       setLoading({status: true, text: 'Распознаём...'});
       const dataURL = webcamRef.current.getScreenshot();
-      // const dataURL = await URLtoDataURL(passport);
-      const file = dataURLtoFile(dataURL, 'passport.jpeg');
+      // const dataURL = await URLtoDataURL(propiska);
+      const file = dataURLtoFile(dataURL, 'registation.jpeg');
       const data = await Api.recognize(file);
       setLoading({status: false, text: ''});
-      setSelfieCheckDataToRequest?.((prev) => ({...prev, documentFile: file, documentSrc: dataURL}));
       setResult(data.data.items[0]);
     },
     [webcamRef],
   );
 
   return (
-    <div className={style.passport}>
+    <div className={style.registration}>
       {result ? <Passport fields={Mapper.mapRecognizedDataToItems(result.fields, docType)} docType={docType}/> : (
         <>
           <Webcam className="video" ref={webcamRef} videoConstraints={videoConstraints}

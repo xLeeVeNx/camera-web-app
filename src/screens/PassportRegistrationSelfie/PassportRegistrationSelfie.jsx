@@ -1,15 +1,14 @@
 import React, {useEffect} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {Pagination} from 'swiper';
-import 'swiper/css';
-import 'swiper/css/pagination';
 import {PassportScreen} from '../PassportScreen/PassportScreen.jsx';
 import {SelfieScreen} from '../SelfieScreen/SelfieScreen.jsx';
-import {Api} from '../../api/api.js';
 import {SelfieCheck} from '../../components/SelfieCheck/SelfieCheck.jsx';
+import {RegistrationScreen} from '../RegistationScreen/RegistationScreen.jsx';
 import {useOutletContext} from 'react-router-dom';
+import {Api} from '../../api/api.js';
 
-export const PassportSelfieScreen = () => {
+export const PassportRegistrationSelfie = () => {
   const [selfieCheckDataToRequest, setSelfieCheckDataToRequest] = React.useState(null);
   const [result, setResult] = React.useState(null);
   const {setLoading} = useOutletContext();
@@ -34,8 +33,9 @@ export const PassportSelfieScreen = () => {
 
   return (
     <Swiper pagination={true} autoHeight observer observeParents modules={[Pagination]} className="mySwiper">
-      <SwiperSlide><PassportScreen setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/></SwiperSlide>
-      <SwiperSlide><SelfieScreen setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/></SwiperSlide>
+      <SwiperSlide><PassportScreen setSelfieCheckDataToRequest={setSelfieCheckDataToRequest} /></SwiperSlide>
+      <SwiperSlide><RegistrationScreen /></SwiperSlide>
+      <SwiperSlide><SelfieScreen setSelfieCheckDataToRequest={setSelfieCheckDataToRequest} /></SwiperSlide>
       {result && <SwiperSlide><SelfieCheck result={result}/></SwiperSlide>}
     </Swiper>
   );

@@ -3,13 +3,12 @@ import style from './SelfieCheck.module.css';
 import Badge from '../Badge/Badge.jsx';
 
 export const SelfieCheck = ({result}) => {
-  console.log(result);
   const mode = result.result > 0.5 ? 'High' : 'Low';
   return (
     <div className={style.selfieCheck}>
       <div className={style.item}>
         <div className={`text ${style.text}`}>Селфи</div>
-        <div className={`text ${style.text}`}>Фото из паспорта</div>
+        <div className={`text ${style.text}`}>Паспорт</div>
       </div>
       <div className={style.item}>
         <img className={style.image} src={result.selfieSrc} alt="Селфи"/>

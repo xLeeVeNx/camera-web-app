@@ -18,19 +18,23 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
   const screenShotIntervalId = useRef(null);
   const faceDetectionIntervalId = useRef(null);
 
+  const getScreenshotSource = (element) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = element?.videoWidth;
+    canvas.height = element?.videoHeight;
+    if (element) {
+      canvas.getContext('2d').drawImage(element, 0, 0);
+    }
+
+    return canvas.toDataURL('image/jpeg');
+  }
+
   useEffect(() => {
     startVideo();
     videoRef && loadModels();
 
     screenShotIntervalId.current = setInterval(() => {
-      const canvas = document.createElement('canvas');
-      canvas.width = videoRef.current?.videoWidth;
-      canvas.height = videoRef.current?.videoHeight;
-      if (videoRef.current) {
-        canvas.getContext('2d').drawImage(videoRef.current, 0, 0);
-      }
-
-      const src = canvas.toDataURL('image/jpeg');
+      const src = getScreenshotSource(videoRef.current);
       if (isFace.current) {
         setScreenShots(prev => {
           const newScreenShots = [...prev, src];
@@ -89,6 +93,7 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
     async () => {
       clearInterval(screenShotIntervalId.current);
       clearInterval(faceDetectionIntervalId.current);
+
       setLoading({status: true, text: 'Загружаем...'});
 
       const detections = await faceapi.detectAllFaces
@@ -100,12 +105,7 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
       let newScreenShots = [...screenShots];
 
       if (detections.length) {
-        const canvas = document.createElement('canvas');
-        canvas.width = videoRef.current?.videoWidth;
-        canvas.height = videoRef.current?.videoHeight;
-        canvas.getContext('2d').drawImage(videoRef.current, 0, 0);
-
-        const src = canvas.toDataURL('image/jpeg');
+        const src = getScreenshotSource(videoRef.current);
 
         newScreenShots = [...screenShots, src];
 
@@ -116,12 +116,12 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
         setScreenShots(newScreenShots);
       }
 
-
       const files = newScreenShots.map((screenShot) => dataURLtoFile(screenShot, 'selfie.jpeg'));
       const response = await Api.batchLiveness(files, newScreenShots);
-      setLoading({status: false, text: ''});
-      setSelfieCheckDataToRequest?.((prev) => ({...prev, selfieFile: files[files.length - 1], selfieSrc: newScreenShots[newScreenShots.length - 1]}));
 
+      setLoading({status: false, text: ''});
+
+      setSelfieCheckDataToRequest?.((prev) => ({...prev, selfieFile: files[files.length - 1], selfieSrc: newScreenShots[newScreenShots.length - 1]}));
       setResult(response);
     });
 

@@ -516,6 +516,7 @@ export const fieldMap = {
     building: "Корп.",
     apartment: "Кв.",
     issuer: "Подразделение, выдавшее регистрацию",
+    issuing_authority: "Подразделение, выдавшее регистрацию",
     subdivision_code: "Код подразделения",
   },
   rus_work_patent: {
