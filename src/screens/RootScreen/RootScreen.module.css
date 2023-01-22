@@ -7,7 +7,7 @@
     z-index: 2;
     transform: translateY(-150%);
     transition: transform 0.3s ease-in-out;
-    background-color: #444444;;
+    background-color: #727272;
 }
 
 .menu.opened {

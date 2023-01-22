@@ -7,6 +7,7 @@ import {dataURLtoFile} from '../../utils/dataURLtoFile.js';
 import {Selfie} from '../../components/Selfie/Selfie.jsx';
 import {Button} from '../../components/Button/Button.jsx';
 import {useOutletContext} from 'react-router-dom';
+import oval from '../../assets/images/oval.svg';
 import Webcam from 'react-webcam';
 
 const videoConstraints = {
@@ -15,6 +16,7 @@ const videoConstraints = {
 
 export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
   const [screenShots, setScreenShots] = React.useState([]);
+  const [faceClass, setFaceClass] = React.useState('');
   const [result, setResult] = React.useState(null);
   const {setLoading} = useOutletContext();
 
@@ -56,14 +58,16 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
     faceDetectionIntervalId.current = setInterval(async () => {
       const detections = await faceapi.detectAllFaces
       (videoRef.current.video, new faceapi.TinyFaceDetectorOptions({
-        inputSize: 128,
+        inputSize: 224,
         scoreThreshold: 0.5,
       }));
 
       if (detections.length) {
         isFace.current = true;
+        setFaceClass(style.face);
       } else {
         isFace.current = false;
+        setFaceClass('')
       }
     }, 100);
   };
@@ -77,8 +81,8 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
 
       const detections = await faceapi.detectAllFaces
       (videoRef.current.video, new faceapi.TinyFaceDetectorOptions({
-        inputSize: 128,
-        scoreThreshold: 0.3,
+        inputSize: 224,
+        scoreThreshold: 0.5,
       }));
 
       let newScreenShots = [...screenShots];
@@ -112,8 +116,8 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
             <Selfie items={result}/>
           ) : (
             <>
-              <Webcam className="video" ref={videoRef} videoConstraints={videoConstraints}
-                      screenshotFormat="image/jpeg" autoPlay muted playsInline mirrored />
+                <Webcam className={`video ${style.video} ${faceClass}`} ref={videoRef} videoConstraints={videoConstraints}
+                        screenshotFormat="image/jpeg" autoPlay muted playsInline mirrored />
               <Button onClick={capture}><img src={circle} alt="Круг"/></Button>
             </>
           )
