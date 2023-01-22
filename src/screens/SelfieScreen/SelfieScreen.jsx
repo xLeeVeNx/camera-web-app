@@ -7,6 +7,11 @@ import {dataURLtoFile} from '../../utils/dataURLtoFile.js';
 import {Selfie} from '../../components/Selfie/Selfie.jsx';
 import {Button} from '../../components/Button/Button.jsx';
 import {useOutletContext} from 'react-router-dom';
+import Webcam from 'react-webcam';
+
+const videoConstraints = {
+  facingMode: "user"
+};
 
 export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
   const [screenShots, setScreenShots] = React.useState([]);
@@ -18,23 +23,11 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
   const screenShotIntervalId = useRef(null);
   const faceDetectionIntervalId = useRef(null);
 
-  const getScreenshotSource = (element) => {
-    const canvas = document.createElement('canvas');
-    canvas.width = element?.videoWidth;
-    canvas.height = element?.videoHeight;
-    if (element) {
-      canvas.getContext('2d').drawImage(element, 0, 0);
-    }
-
-    return canvas.toDataURL('image/jpeg');
-  }
-
   useEffect(() => {
-    startVideo();
     videoRef && loadModels();
 
     screenShotIntervalId.current = setInterval(() => {
-      const src = getScreenshotSource(videoRef.current);
+      const src = videoRef.current.getScreenshot();
       if (isFace.current) {
         setScreenShots(prev => {
           const newScreenShots = [...prev, src];
@@ -47,8 +40,6 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
     }, 500);
 
     return () => {
-      videoRef.current?.srcObject.getTracks().forEach(track => track.stop());
-      videoRef.current?.pause();
       clearInterval(screenShotIntervalId.current);
       clearInterval(faceDetectionIntervalId.current);
     };
@@ -62,21 +53,10 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
     });
   };
 
-  const startVideo = () => {
-    navigator.mediaDevices.getUserMedia({video: true})
-      .then((currentStream) => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = currentStream;
-        }
-      }).catch((err) => {
-      console.log(err);
-    });
-  };
-
   const faceDetection = async () => {
     faceDetectionIntervalId.current = setInterval(async () => {
       const detections = await faceapi.detectAllFaces
-      (videoRef.current, new faceapi.TinyFaceDetectorOptions({
+      (videoRef.current.video, new faceapi.TinyFaceDetectorOptions({
         inputSize: 128,
         scoreThreshold: 0.5,
       }));
@@ -105,7 +85,7 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
       let newScreenShots = [...screenShots];
 
       if (detections.length) {
-        const src = getScreenshotSource(videoRef.current);
+        const src = videoRef.current.getScreenshot();
 
         newScreenShots = [...screenShots, src];
 
@@ -133,7 +113,8 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
             <Selfie items={result}/>
           ) : (
             <>
-              <video className="video" crossOrigin="anonymous" ref={videoRef} autoPlay muted playsInline></video>
+              <Webcam className="video" ref={videoRef} videoConstraints={videoConstraints}
+                      screenshotFormat="image/jpeg" autoPlay muted playsInline />
               <Button onClick={capture}><img src={circle} alt="Круг"/></Button>
             </>
           )
