@@ -33,9 +33,21 @@ export const PassportRegistrationSelfie = () => {
 
   return (
     <Swiper pagination={true} autoHeight observer observeParents modules={[Pagination]} className="mySwiper">
-      <SwiperSlide><PassportScreen setSelfieCheckDataToRequest={setSelfieCheckDataToRequest} /></SwiperSlide>
-      <SwiperSlide><RegistrationScreen /></SwiperSlide>
-      <SwiperSlide><SelfieScreen setSelfieCheckDataToRequest={setSelfieCheckDataToRequest} /></SwiperSlide>
+      <SwiperSlide>
+        {({isActive}) => (
+          <PassportScreen isActive={isActive} setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/>
+        )}
+      </SwiperSlide>
+      <SwiperSlide>
+        {({isActive}) => (
+          <RegistrationScreen isActive={isActive}/>
+        )}
+      </SwiperSlide>
+      <SwiperSlide>
+        {({ isActive }) => (
+          <SelfieScreen isActive={isActive} setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/>
+        )}
+      </SwiperSlide>
       {result && <SwiperSlide><SelfieCheck result={result}/></SwiperSlide>}
     </Swiper>
   );

@@ -2,9 +2,7 @@ import React, {useEffect} from 'react';
 import Webcam from 'react-webcam';
 import style from './RegistationScreen.module.css';
 import {dataURLtoFile} from '../../utils/dataURLtoFile.js';
-import propiska from '../../assets/images/propiska.jpg';
 import {Api} from '../../api/api.js';
-import {URLtoDataURL} from '../../utils/URLtoDataURL.js';
 import Passport from '../../components/Passport/Passport.jsx';
 import {Mapper} from '../../utils/mapper.js';
 import {Button} from '../../components/Button/Button.jsx';
@@ -12,21 +10,19 @@ import circle from '../../assets/images/cirlce.svg';
 import {useOutletContext} from 'react-router-dom';
 
 const videoConstraints = {
-  facingMode: { exact: "environment" }
+  facingMode: {exact: 'environment'},
 };
 
 const docType = 'passport_registration';
 
-export const RegistrationScreen = () => {
+export const RegistrationScreen = ({isActive}) => {
   const [result, setResult] = React.useState(null);
   const {setLoading} = useOutletContext();
   const webcamRef = React.useRef(null);
 
   useEffect(() => {
-    return () => {
-      if (webcamRef.current) {
-        webcamRef.current.unmounted = true;
-      }
+    if (!isActive && webcamRef.current) {
+      webcamRef.current.unmounted = true;
     }
   }, []);
 

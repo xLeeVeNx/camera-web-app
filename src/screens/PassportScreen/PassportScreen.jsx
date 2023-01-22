@@ -17,16 +17,14 @@ const videoConstraints = {
 
 const docType = 'passport_main';
 
-export const PassportScreen = ({setSelfieCheckDataToRequest}) => {
+export const PassportScreen = ({setSelfieCheckDataToRequest, isActive}) => {
   const [result, setResult] = React.useState(null);
   const {setLoading} = useOutletContext();
   const webcamRef = React.useRef(null);
 
   useEffect(() => {
-    return () => {
-      if (webcamRef.current) {
-        webcamRef.current.unmounted = true;
-      }
+    if (!isActive && webcamRef.current) {
+      webcamRef.current.unmounted = true;
     }
   }, []);
 
