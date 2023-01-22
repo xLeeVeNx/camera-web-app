@@ -42,7 +42,7 @@ export const PassportScreen = ({setSelfieCheckDataToRequest}) => {
       {result ? <Passport fields={Mapper.mapRecognizedDataToItems(result.fields, docType)} docType={docType}/> : (
         <>
           <Webcam className="video" ref={webcamRef} videoConstraints={videoConstraints}
-                  screenshotFormat="image/jpeg"/>
+                  screenshotFormat="image/jpeg" autoPlay muted playsInline/>
           <Button onClick={capture}><img src={circle} alt="Круг"/></Button>
         </>
       )}
