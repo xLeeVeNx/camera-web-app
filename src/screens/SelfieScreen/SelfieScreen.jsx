@@ -133,7 +133,7 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
             <Selfie items={result}/>
           ) : (
             <>
-              <video className="video" crossOrigin="anonymous" ref={videoRef} autoPlay></video>
+              <video className="video" crossOrigin="anonymous" ref={videoRef}></video>
               <Button onClick={capture}><img src={circle} alt="Круг"/></Button>
             </>
           )
