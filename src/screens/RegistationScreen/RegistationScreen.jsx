@@ -22,16 +22,6 @@ export const RegistrationScreen = () => {
   const {setLoading} = useOutletContext();
   const webcamRef = React.useRef(null);
 
-  useEffect(() => {
-    return () => {
-      const stream = webcamRef.current.video.srcObject;
-      const tracks = stream.getTracks();
-
-      tracks.forEach(track => track.stop());
-      webcamRef.current.video.srcObject = null;
-    }
-  }, [])
-
   const capture = React.useCallback(
     async () => {
       setLoading({status: true, text: 'Распознаём...'});

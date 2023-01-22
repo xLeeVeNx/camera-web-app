@@ -33,10 +33,15 @@ export const PassportSelfieScreen = () => {
   }, [selfieCheckDataToRequest]);
 
   return (
-    <Swiper pagination={true} autoHeight observer observeParents modules={[Pagination]} className="mySwiper">
-      <SwiperSlide><PassportScreen setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/></SwiperSlide>
-      <SwiperSlide><SelfieScreen setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/></SwiperSlide>
-      {result && <SwiperSlide><SelfieCheck result={result}/></SwiperSlide>}
-    </Swiper>
+    <>
+      <PassportScreen setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/>
+      <SelfieScreen setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/>
+      {result && <SelfieCheck result={result}/>}
+    </>
+    // <Swiper pagination={true} autoHeight observer observeParents modules={[Pagination]} className="mySwiper">
+    //   <SwiperSlide><PassportScreen setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/></SwiperSlide>
+    //   <SwiperSlide><SelfieScreen setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/></SwiperSlide>
+    //   {result && <SwiperSlide><SelfieCheck result={result}/></SwiperSlide>}
+    // </Swiper>
   );
 };

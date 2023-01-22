@@ -42,11 +42,6 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
     return () => {
       clearInterval(screenShotIntervalId.current);
       clearInterval(faceDetectionIntervalId.current);
-      const stream = videoRef.current.video.srcObject;
-      const tracks = stream.getTracks();
-
-      tracks.forEach(track => track.stop());
-      videoRef.current.video.srcObject = null;
     };
   }, []);
   const loadModels = () => {
