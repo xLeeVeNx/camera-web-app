@@ -25,7 +25,7 @@ export const RegistrationScreen = () => {
       setLoading({status: true, text: 'Распознаём...'});
       const dataURL = webcamRef.current.getScreenshot();
       // const dataURL = await URLtoDataURL(propiska);
-      const file = dataURLtoFile(dataURL, 'registation.jpeg');
+      const file = dataURLtoFile(dataURL, 'registration.jpeg');
       const data = await Api.recognize(file);
       setLoading({status: false, text: ''});
       setResult(data.data.items[0]);
@@ -38,7 +38,7 @@ export const RegistrationScreen = () => {
       {result ? <Passport fields={Mapper.mapRecognizedDataToItems(result.fields, docType)} docType={docType}/> : (
         <>
           <Webcam className="video" ref={webcamRef} videoConstraints={videoConstraints}
-                  screenshotFormat="image/jpeg" mirrored/>
+                  screenshotFormat="image/jpeg"/>
           <Button onClick={capture}><img src={circle} alt="Круг"/></Button>
         </>
       )}

@@ -7,7 +7,6 @@ import {dataURLtoFile} from '../../utils/dataURLtoFile.js';
 import {Selfie} from '../../components/Selfie/Selfie.jsx';
 import {Button} from '../../components/Button/Button.jsx';
 import {useOutletContext} from 'react-router-dom';
-import oval from '../../assets/images/oval.svg';
 import Webcam from 'react-webcam';
 
 const videoConstraints = {
@@ -58,8 +57,8 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
     faceDetectionIntervalId.current = setInterval(async () => {
       const detections = await faceapi.detectAllFaces
       (videoRef.current.video, new faceapi.TinyFaceDetectorOptions({
-        inputSize: 224,
-        scoreThreshold: 0.5,
+        inputSize: 128,
+        scoreThreshold: 0.3,
       }));
 
       if (detections.length) {
@@ -81,8 +80,8 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest}) => {
 
       const detections = await faceapi.detectAllFaces
       (videoRef.current.video, new faceapi.TinyFaceDetectorOptions({
-        inputSize: 224,
-        scoreThreshold: 0.5,
+        inputSize: 128,
+        scoreThreshold: 0.3,
       }));
 
       let newScreenShots = [...screenShots];
