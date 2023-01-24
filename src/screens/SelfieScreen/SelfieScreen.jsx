@@ -61,7 +61,7 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest, setSelfieResult, setI
   const faceDetection = async () => {
     faceDetectionIntervalId.current = setInterval(async () => {
       const detection = videoRef.current?.video && await faceapi.detectSingleFace(videoRef.current.video, new faceapi.MtcnnOptions({ minFaceSize: 58, scaleFactor: 0.9, scoreThresholds: [0.7, 0.7, 0.7] }));
-      console.log(detection);
+
       if (detection) {
         isFace.current = true;
         setFaceClass(style.face);
