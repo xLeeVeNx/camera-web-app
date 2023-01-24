@@ -5,9 +5,8 @@ export class Api {
   static async recognize(file) {
     const formData = new FormData();
     formData.append('image', file);
-    return axiosInstance.post('/recognize', formData, {
+    return axiosInstance.post('https://latest.dbrain.io/recognize', formData, {
       params: {
-        use_external_api: false,
         with_hitl: false,
         mode: 'default',
         token: 'docr2021docr',
@@ -16,11 +15,12 @@ export class Api {
   }
 
   static async splitSelfiePassportCheck({selfieFile, documentFile, selfieSrc, documentSrc}) {
+    const formData = new FormData();
+    formData.append('face_image', selfieFile);
+    formData.append('document_image', documentFile);
+
     try {
-      const response = await axios.post(`${secondaryURL}/pipelines/run/face_selfie_split`, {
-          face_image: selfieFile,
-          document_image: documentFile,
-        },
+      const response = await axios.post(`${secondaryURL}/pipelines/run/face_selfie_split`, formData,
         {
           headers: {
             'Content-Type': 'multipart/form-data',

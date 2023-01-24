@@ -106,4 +106,20 @@ span.swiper-pagination-bullet-active {
     background: #139EEF;
 }
 
+.title, .subtitle {
+    text-align: center;
+    color: #FAFAFA;
+}
 
+.title {
+    font-weight: 500;
+    font-size: 32px;
+    line-height: 1;
+    margin-bottom: 8px;
+}
+
+.subtitle {
+    font-size: 16px;
+    line-height: 1.5;
+    margin-bottom: 25px;
+}

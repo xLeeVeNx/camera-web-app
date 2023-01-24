@@ -1,7 +1,7 @@
 import React, {useEffect} from 'react';
 import Webcam from 'react-webcam';
 import style from './RegistationScreen.module.css';
-import {dataURLtoFile} from '../../utils/dataURLtoFile.js';
+import {base64ToFile} from '../../utils/base64ToFile.js';
 import {Api} from '../../api/api.js';
 import Passport from '../../components/Passport/Passport.jsx';
 import {Mapper} from '../../utils/mapper.js';
@@ -25,7 +25,7 @@ export const RegistrationScreen = () => {
       setLoading({status: true, text: 'Распознаём...'});
       const dataURL = webcamRef.current.getScreenshot();
       // const dataURL = await URLtoDataURL(propiska);
-      const file = dataURLtoFile(dataURL, 'registration.jpeg');
+      const file = base64ToFile(dataURL, 'registration.jpeg');
       const data = await Api.recognize(file);
       setLoading({status: false, text: ''});
       setResult(data.data.items[0]);

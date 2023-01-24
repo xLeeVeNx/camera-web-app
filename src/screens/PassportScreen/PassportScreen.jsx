@@ -1,47 +1,74 @@
 import React, {useEffect} from 'react';
 import Webcam from 'react-webcam';
 import style from './PassportScreen.module.css';
-import {dataURLtoFile} from '../../utils/dataURLtoFile.js';
-import passport from '../../assets/images/passport.jpg';
-import {Api} from '../../api/api.js';
-import {URLtoDataURL} from '../../utils/URLtoDataURL.js';
+import {base64ToFile} from '../../utils/base64ToFile.js';
 import Passport from '../../components/Passport/Passport.jsx';
-import {Mapper} from '../../utils/mapper.js';
 import {Button} from '../../components/Button/Button.jsx';
 import circle from '../../assets/images/cirlce.svg';
-import {useOutletContext} from 'react-router-dom';
 
 const videoConstraints = {
-  facingMode: { exact: "environment" }
+  width: 1920,
+  height: 1080,
+  // facingMode: { exact: "environment" }
+  facingMode: 'user',
 };
 
 const docType = 'passport_main';
 
-export const PassportScreen = ({setSelfieCheckDataToRequest}) => {
-  const [result, setResult] = React.useState(null);
-  const {setLoading} = useOutletContext();
+export const PassportScreen = ({
+                                 setSelfieCheckDataToRequest,
+                                 setPassportResult,
+                                 setIsPassportRequest,
+                                 passportResult,
+  selfieCheckDataToRequest
+                               }) => {
   const webcamRef = React.useRef(null);
-
-  const capture = React.useCallback(
-    async () => {
-      setLoading({status: true, text: 'Распознаём...'});
-      const dataURL = webcamRef.current.getScreenshot();
-      // const dataURL = await URLtoDataURL(passport);
-      const file = dataURLtoFile(dataURL, 'passport.jpeg');
-      const data = await Api.recognize(file);
-      setLoading({status: false, text: ''});
-      setSelfieCheckDataToRequest?.((prev) => ({...prev, documentFile: file, documentSrc: dataURL}));
-      setResult(data.data.items[0]);
-    },
-    [webcamRef],
+  const [result, setResult] = React.useState(null);
+  const passportWorker = React.useMemo(
+    () => new Worker(new URL('./worker.js', import.meta.url)),
+    [],
   );
+
+  useEffect(() => {
+    passportWorker.onmessage = (event) => {
+      if (event && event.data) {
+        const {response, file, base64} = event.data;
+        setResult(response?.data?.items[0]);
+        setPassportResult?.(response?.data?.items[0]);
+        setSelfieCheckDataToRequest?.((prev) => ({...prev, documentFile: file, documentSrc: base64}));
+      }
+    };
+  }, [passportWorker]);
+
+  function getData(file, base64) {
+    const data = JSON.parse(JSON.stringify({
+      msg: 'getData',
+      base64,
+    }));
+
+    passportWorker
+      .postMessage({...data, file});
+  }
+
+  const capture = React.useCallback(async () => {
+    setIsPassportRequest?.(true);
+    const base64 = webcamRef.current.getScreenshot();
+    // const base64 = await URLtoDataURL(passport)
+    const file = base64ToFile(base64, 'passport.jpeg');
+    getData(file, base64);
+  }, [webcamRef]);
 
   return (
     <div className={style.passport}>
-      {result ? <Passport fields={Mapper.mapRecognizedDataToItems(result.fields, docType)} docType={docType}/> : (
+      {result || passportResult ? <Passport imageSrc={selfieCheckDataToRequest?.documentSrc}
+        item={result || passportResult}
+        docType={docType}/> : (
         <>
-          <Webcam className="video" ref={webcamRef} videoConstraints={videoConstraints}
-                  screenshotFormat="image/jpeg" autoPlay muted playsInline />
+          <h2 className="title">Паспорт</h2>
+          <div className="subtitle">Расположите паспорт в рамку</div>
+          <Webcam className={`video ${style.video}`} ref={webcamRef} videoConstraints={videoConstraints}
+                  screenshotFormat="image/jpeg" autoPlay audio={false} playsInline forceScreenshotSourceSize
+                  imageSmoothing={false} screenshotQuality={1}/>
           <Button onClick={capture}><img src={circle} alt="Круг"/></Button>
         </>
       )}

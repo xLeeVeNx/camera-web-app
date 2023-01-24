@@ -28,10 +28,10 @@ static mapRecognizedDataToItems(
   return Object.keys(recognizedData).map((key) => {
     return {
       name: key,
-      value: recognizedData[key].text,
-      confidenceNumber: recognizedData[key].confidence,
+      value: recognizedData[key]?.text,
+      confidenceNumber: recognizedData[key]?.confidence,
       confidenceLevel: Mapper.mapConfidence(
-        recognizedData[key].confidence,
+        recognizedData[key]?.confidence,
         docType,
         key
       ),

@@ -1520,6 +1520,13 @@
     "@jridgewell/resolve-uri" "3.1.0"
     "@jridgewell/sourcemap-codec" "1.4.14"
 
+"@koale/useworker@^4.0.2":
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/@koale/useworker/-/useworker-4.0.2.tgz#cb540a2581cd6025307c3ca6685bc60748773e58"
+  integrity sha512-xPIPADtom8/3/4FLNj7MvNcBM/Z2FleH85Fdx2O869eoKW8+PoEgtSVvoxWjCWMA46Sm9A5/R1TyzNGc+yM0wg==
+  dependencies:
+    dequal "^1.0.0"
+
 "@leichtgewicht/ip-codec@^2.0.1":
   version "2.0.4"
   resolved "https://registry.npmjs.org/@leichtgewicht/ip-codec/-/ip-codec-2.0.4.tgz"
@@ -1573,6 +1580,11 @@
   resolved "https://registry.npmjs.org/@remix-run/router/-/router-1.2.1.tgz"
   integrity sha512-XiY0IsyHR+DXYS5vBxpoBe/8veTeoRpMHP+vDosLZxL5bnpetzI0igkxkLZS235ldLzyfkxF+2divEwWHP3vMQ==
 
+"@remote-ui/rpc@^1.2.5":
+  version "1.4.1"
+  resolved "https://registry.yarnpkg.com/@remote-ui/rpc/-/rpc-1.4.1.tgz#c9a5b69819710c7e35392272c56df6e76322356f"
+  integrity sha512-YLjZqAeTolxLPvH59jO1W5/A1M0uK8IDtbfnrU8LXEaUPn9kmE7w5z2Isa+Do5m+YjTCn4y5bNHBsUTTsmhO0w==
+
 "@rollup/plugin-babel@^5.2.0":
   version "5.3.1"
   resolved "https://registry.npmjs.org/@rollup/plugin-babel/-/plugin-babel-5.3.1.tgz"
@@ -1614,6 +1626,32 @@
   version "1.2.0"
   resolved "https://registry.npmjs.org/@rushstack/eslint-patch/-/eslint-patch-1.2.0.tgz"
   integrity sha512-sXo/qW2/pAcmT43VoRKOJbDOfV3cYpq3szSVfIThQXNt+E4DfKj361vaAt3c88U5tPUxzEswam7GW48PJqtKAg==
+
+"@shopify/react-hooks@^3.0.2":
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/@shopify/react-hooks/-/react-hooks-3.0.2.tgz#6c55be09216cd889c76a9c84f51c32d8a3af6251"
+  integrity sha512-zfo4vgB5k4jwOWmwJJxaYkDRJs/Yf+D7RlxVZDmZukiXqD/42m0wP3az3+wq74AjPf3PyG8GcOl2Z3d79Y4nEw==
+
+"@shopify/react-web-worker@^5.0.7":
+  version "5.0.7"
+  resolved "https://registry.yarnpkg.com/@shopify/react-web-worker/-/react-web-worker-5.0.7.tgz#2db38cabf76d654e2ebf6cb1500d2a0ee678caf2"
+  integrity sha512-lB21A0Wn1p8oKfV53kjeovo5vOCQ6TP/SlhQGZd3PlX3xSxUqSNrFet21zU5RfMcMb6+NBfBKAAGOCI/MSoiDg==
+  dependencies:
+    "@shopify/react-hooks" "^3.0.2"
+    "@shopify/useful-types" "^5.1.1"
+    "@shopify/web-worker" "^6.0.0"
+
+"@shopify/useful-types@^5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@shopify/useful-types/-/useful-types-5.1.1.tgz#83e7b951dc360910925d62d107d39939536b7b8c"
+  integrity sha512-Lnzo84EsrbdO54togslYiwT4EVGDuQW96rRKSEJhkkluyirEjx61aw0SEzZOkNy6VOi5z6CdTBo/vlsnXIhV1Q==
+
+"@shopify/web-worker@^6.0.0":
+  version "6.0.0"
+  resolved "https://registry.yarnpkg.com/@shopify/web-worker/-/web-worker-6.0.0.tgz#8ce80cb2e0630d6862ea628213e0ef39642f91b2"
+  integrity sha512-xQZncFtiecxUB66P9ENUi6z4hgrdc3n0qsIL6zSqycrrBgQKNUFq0tQ1cxmd/IqSKHjeNcfmiG/jaCbWuxYw4Q==
+  dependencies:
+    "@remote-ui/rpc" "^1.2.5"
 
 "@sinclair/typebox@^0.24.1":
   version "0.24.51"
@@ -3622,6 +3660,11 @@ depd@~1.1.2:
   version "1.1.2"
   resolved "https://registry.npmjs.org/depd/-/depd-1.1.2.tgz"
   integrity sha512-7emPTl6Dpo6JRXOXjLRxck+FlLRX5847cLKEn00PLAgc3g2hTZZgr+e4c2v6QpSmLeFP3n5yUo7ft6avBK/5jQ==
+
+dequal@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/dequal/-/dequal-1.0.1.tgz#dbbf9795ec626e9da8bd68782f4add1d23700d8b"
+  integrity sha512-Fx8jxibzkJX2aJgyfSdLhr9tlRoTnHKrRJuu2XHlAgKioN2j19/Bcbe0d4mFXYZ3+wpE2KVobUVTfDutcD17xQ==
 
 destroy@1.2.0:
   version "1.2.0"

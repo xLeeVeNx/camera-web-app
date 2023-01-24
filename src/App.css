@@ -5,7 +5,7 @@
 
 .video {
   width: 500px;
-  height: 500px;
+  height: 350px;
   object-fit: cover;
   border: 6px solid #139EEF;
   border-radius: 12px;
@@ -15,13 +15,11 @@
 @media (max-width: 768px) {
   .video {
     width: 340px;
-    height: 470px;
   }
 }
 
 @media (max-width: 425px) {
   .video {
     width: 290px;
-    height: 420px;
   }
 }
