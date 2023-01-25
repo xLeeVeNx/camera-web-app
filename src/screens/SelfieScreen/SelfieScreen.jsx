@@ -51,8 +51,8 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest, setSelfieResult, setI
   const loadModels = () => {
     const MODEL_URL = '/models';
     Promise.all([
-      // faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-      faceapi.nets.mtcnn.loadFromUri(MODEL_URL),
+      faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+      faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
     ]).then(() => {
       faceDetection();
     });
@@ -60,14 +60,21 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest, setSelfieResult, setI
 
   const faceDetection = async () => {
     faceDetectionIntervalId.current = setInterval(async () => {
-      const detection = videoRef.current?.video && await faceapi.detectSingleFace(videoRef.current.video, new faceapi.MtcnnOptions({ minFaceSize: 58, scaleFactor: 0.9, scoreThresholds: [0.7, 0.7, 0.7] }));
+      const detection = videoRef.current?.video && await faceapi.detectSingleFace(videoRef.current.video, new faceapi.TinyFaceDetectorOptions({
+        inputSize: 128,
+        scoreThreshold: 0.3,
+      })).withFaceLandmarks();
+      const landmarks = detection?.landmarks;
+      const nose = landmarks?.getNose();
 
-      if (detection) {
-        isFace.current = true;
-        setFaceClass(style.face);
-      } else {
+      const isNoseTurned = !(nose?.every((point) => point.x < 385 && point.x > 270 && point.y < 380 && point.y > 120));
+
+      if (isNoseTurned) {
         isFace.current = false;
         setFaceClass('');
+      } else {
+        isFace.current = true;
+        setFaceClass(style.face);
       }
     }, 100);
   };
@@ -75,11 +82,14 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest, setSelfieResult, setI
   const capture = React.useCallback(
     async () => {
       setIsSelfieRequest?.(true);
-      setLoading({status: true, text: 'Сравниваем...' })
+      setLoading({status: true, text: 'Сравниваем...'});
       clearInterval(screenShotIntervalId.current);
       clearInterval(faceDetectionIntervalId.current);
 
-      const detection = videoRef.current?.video && await faceapi.detectSingleFace(videoRef.current.video);
+      const detection = videoRef.current?.video && await faceapi.detectSingleFace(videoRef.current.video, new faceapi.TinyFaceDetectorOptions({
+        inputSize: 128,
+        scoreThreshold: 0.3,
+      })).withFaceLandmarks();
 
       let newScreenShots = [...screenShots];
 
@@ -122,7 +132,8 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest, setSelfieResult, setI
               <h2 className="title">Селфи</h2>
               <div className="subtitle">Расположите лицо в рамку</div>
               <Webcam className={`video ${style.video} ${faceClass}`} ref={videoRef} videoConstraints={videoConstraints}
-                      screenshotFormat="image/jpeg" autoPlay audio={false} playsInline mirrored forceScreenshotSourceSize imageSmoothing={false} screenshotQuality={1}/>
+                      screenshotFormat="image/jpeg" autoPlay audio={false} playsInline mirrored
+                      forceScreenshotSourceSize imageSmoothing={false} screenshotQuality={1}/>
               <Button onClick={capture}><img src={circle} alt="Круг"/></Button>
             </>
           )
