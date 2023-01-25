@@ -11,7 +11,7 @@ self.onmessage = async (event) => {
   }
 };
 
-async function getData({file, base64}) {
-  const response = await Api.recognize(file);
+async function getData({file, base64, params}) {
+  const response = await Api.recognize(file, params);
   return {response, file, base64}
 }

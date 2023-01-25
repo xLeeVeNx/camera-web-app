@@ -12,7 +12,7 @@ const Passport = ({item, docType, imageSrc, isRegistration}) => {
       <h1>Извините, на фото не {isRegistration ? 'видна прописка' : 'виден паспорт'}.</h1>
     </div>
   );
-  const fields = Mapper.mapRecognizedDataToItems(item || item, item?.doc_type || item?.doc_type)
+  const fields = Mapper.mapRecognizedDataToItems(item?.fields, item?.doc_type || item?.doc_type)
   const isEmptyField = fields.every((field) => field.name === '');
   if (isEmptyField) return (
     <div className={style.error}>

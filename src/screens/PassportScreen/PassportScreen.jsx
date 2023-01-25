@@ -10,7 +10,7 @@ import {useOutletContext} from 'react-router-dom';
 const videoConstraints = {
   width: 1920,
   height: 1080,
-  facingMode: { exact: "environment" }
+  facingMode: {exact: 'environment'},
   // facingMode: 'user',
 };
 
@@ -21,11 +21,12 @@ export const PassportScreen = ({
                                  setPassportResult,
                                  setIsPassportRequest,
                                  passportResult,
-  selfieCheckDataToRequest
+                                 selfieCheckDataToRequest,
                                }) => {
   const webcamRef = React.useRef(null);
   const [result, setResult] = React.useState(null);
   const {setLoading} = useOutletContext();
+  const [base64, setBase64] = React.useState(null);
   const passportWorker = React.useMemo(
     () => new Worker(new URL('./worker.js', import.meta.url)),
     [],
@@ -36,12 +37,12 @@ export const PassportScreen = ({
       if (event && event.data) {
         if (window.location.pathname === '/passport') {
           setLoading({status: false, text: ''});
-        } else {
-          setSelfieCheckDataToRequest?.((prev) => ({...prev, documentFile: file, documentSrc: base64}));
         }
         const {response, file, base64} = event.data;
+        setBase64(base64);
         setResult(response?.data?.items[0]);
         setPassportResult?.(response?.data?.items[0]);
+        setSelfieCheckDataToRequest?.((prev) => ({...prev, documentFile: file, documentSrc: base64}));
       }
     };
   }, [passportWorker]);
@@ -53,25 +54,25 @@ export const PassportScreen = ({
     }));
 
     passportWorker
-      .postMessage({...data, file});
+      .postMessage({...data, file, params: {doc_type: docType}});
   }
 
   const capture = React.useCallback(async () => {
+    if (window.location.pathname === '/passport') {
+      setLoading({status: true, text: 'Распознаем...'});
+    }
     setIsPassportRequest?.(true);
     const base64 = webcamRef.current.getScreenshot();
     // const base64 = await URLtoDataURL(passport)
     const file = base64ToFile(base64, 'passport.jpeg');
     getData(file, base64);
-    if (window.location.pathname === '/passport') {
-      setLoading({status: true, text: 'Распознаем...'});
-    }
   }, [webcamRef]);
 
   return (
     <div className={style.passport}>
-      {result || passportResult ? <Passport imageSrc={selfieCheckDataToRequest?.documentSrc}
-        item={result || passportResult}
-        docType={docType}/> : (
+      {result || passportResult ? (
+        <Passport imageSrc={base64} item={result || passportResult} docType={docType}/>
+      ) : (
         <>
           <h2 className="title">Паспорт</h2>
           <div className="subtitle">Расположите паспорт в рамку</div>

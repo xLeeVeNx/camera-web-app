@@ -125,7 +125,11 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest, setSelfieResult, setI
       const files = newScreenShots.map((screenShot) => base64ToFile(screenShot, 'selfie.jpeg'));
       const response = await Api.batchLiveness(files, newScreenShots);
 
-      if (setSelfieCheckDataToRequest && window.location.pathname !== '/selfie') {
+      if (window.location.pathname === '/selfie') {
+        setLoading({status: false, text: ''});
+      }
+
+      if (setSelfieCheckDataToRequest) {
         const selfieSrc = newScreenShots[newScreenShots.length - 1];
         const selfieFile = base64ToFile(selfieSrc, 'selfie.jpeg');
 
@@ -137,7 +141,6 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest, setSelfieResult, setI
       }
       setResult(response);
       setSelfieResult?.(response);
-      setLoading({status: false, text: ''});
     });
 
   return (

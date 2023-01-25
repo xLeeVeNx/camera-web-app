@@ -2,11 +2,12 @@ import {axiosInstance, secondaryURL} from './index.js';
 import axios from 'axios';
 
 export class Api {
-  static async recognize(file) {
+  static async recognize(file, params = {}) {
     const formData = new FormData();
     formData.append('image', file);
     return axiosInstance.post('https://latest.dbrain.io/recognize', formData, {
       params: {
+        ...params,
         with_hitl: false,
         mode: 'default',
         token: 'docr2021docr',

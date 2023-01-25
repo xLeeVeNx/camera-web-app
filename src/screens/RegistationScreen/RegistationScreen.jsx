@@ -5,7 +5,6 @@ import {base64ToFile} from '../../utils/base64ToFile.js';
 import Passport from '../../components/Passport/Passport.jsx';
 import {Button} from '../../components/Button/Button.jsx';
 import circle from '../../assets/images/cirlce.svg';
-import {useOutletContext} from 'react-router-dom';
 
 const videoConstraints = {
   width: 1920,
@@ -14,7 +13,7 @@ const videoConstraints = {
   // facingMode: 'user',
 };
 
-const docType = 'passport_main';
+const docType = 'passport_registration';
 
 export const RegistrationScreen = ({
                                  setRegistrationResult, setIsRegistrationRequest, registrationResult
@@ -45,7 +44,7 @@ export const RegistrationScreen = ({
     }));
 
     passportWorker
-      .postMessage({...data, file});
+      .postMessage({...data, file, params: {doc_type: docType}});
   }
 
   const capture = React.useCallback(async () => {

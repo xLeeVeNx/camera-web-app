@@ -31,19 +31,21 @@ export const PassportRegistrationSelfieScreen = () => {
           selfieSrc: dataToRequest.selfieSrc,
           documentSrc: dataToRequest.documentSrc,
         });
-        setLoading({status: false, text: ''});
+        if (registrationResult) {
+          setLoading({status: false, text: ''});
+        }
         setResult(response);
       }
     };
     getResult();
 
-  }, [selfieCheckDataToRequest]);
+  }, [selfieCheckDataToRequest, registrationResult]);
 
   return (
     <>
       {
         isSelfieRequest && result ? (
-          <Swiper initialSlide={2} pagination={true} observer observeParents modules={[Pagination]}>
+          <Swiper initialSlide={2} autoHeight pagination={true} observer observeParents modules={[Pagination]}>
             <SwiperSlide>
               <PassportScreen selfieCheckDataToRequest={selfieCheckDataToRequest} passportResult={passportResult}/>
             </SwiperSlide>

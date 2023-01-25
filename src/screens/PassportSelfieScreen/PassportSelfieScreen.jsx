@@ -40,7 +40,7 @@ export const PassportSelfieScreen = () => {
     <>
       {
         isSelfieRequest && result ? (
-          <Swiper initialSlide={2} pagination={true} observer observeParents modules={[Pagination]}>
+          <Swiper initialSlide={2} autoHeight pagination={true} observer observeParents modules={[Pagination]}>
             <SwiperSlide>
               <PassportScreen selfieCheckDataToRequest={selfieCheckDataToRequest} passportResult={passportResult}/>
             </SwiperSlide>
