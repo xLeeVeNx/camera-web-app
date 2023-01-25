@@ -7,7 +7,7 @@ import {SelfieScreen} from './screens/SelfieScreen/SelfieScreen';
 import {RootScreen} from './screens/RootScreen/RootScreen.jsx';
 import {PassportScreen} from './screens/PassportScreen/PassportScreen.jsx';
 import {PassportSelfieScreen} from './screens/PassportSelfieScreen/PassportSelfieScreen.jsx';
-import {PassportRegistrationSelfie} from './screens/PassportRegistrationSelfie/PassportRegistrationSelfie.jsx';
+import {PassportRegistrationSelfieScreen} from './screens/PassportRegistrationSelfie/PassportRegistrationSelfie.jsx';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 const router = createBrowserRouter([
@@ -33,7 +33,7 @@ const router = createBrowserRouter([
       },
       {
         path: "passport-registration-selfie",
-        element: <PassportRegistrationSelfie />,
+        element: <PassportRegistrationSelfieScreen />,
       },
     ]
   }

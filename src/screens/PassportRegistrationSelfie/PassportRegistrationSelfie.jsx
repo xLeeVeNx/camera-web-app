@@ -1,28 +1,35 @@
 import React, {useEffect} from 'react';
 import {Swiper, SwiperSlide} from 'swiper/react';
 import {Pagination} from 'swiper';
+import 'swiper/css';
+import 'swiper/css/pagination';
 import {PassportScreen} from '../PassportScreen/PassportScreen.jsx';
 import {SelfieScreen} from '../SelfieScreen/SelfieScreen.jsx';
-import {SelfieCheck} from '../../components/SelfieCheck/SelfieCheck.jsx';
-import {RegistrationScreen} from '../RegistationScreen/RegistationScreen.jsx';
-import {useOutletContext} from 'react-router-dom';
 import {Api} from '../../api/api.js';
+import {SelfieCheck} from '../../components/SelfieCheck/SelfieCheck.jsx';
+import {useOutletContext} from 'react-router-dom';
+import {RegistrationScreen} from '../RegistationScreen/RegistationScreen.jsx';
 
-export const PassportRegistrationSelfie = () => {
+export const PassportRegistrationSelfieScreen = () => {
   const [selfieCheckDataToRequest, setSelfieCheckDataToRequest] = React.useState(null);
   const [result, setResult] = React.useState(null);
-  const {setLoading} = useOutletContext();
-  const [activeIndex, setActiveIndex] = React.useState(0);
+  const [passportResult, setPassportResult] = React.useState(null);
+  const [selfieResult, setSelfieResult] = React.useState(null);
+  const [registrationResult, setRegistrationResult] = React.useState(null);
+  const {loading, setLoading} = useOutletContext();
+  const [isPassportRequest, setIsPassportRequest] = React.useState(false);
+  const [isSelfieRequest, setIsSelfieRequest] = React.useState(false);
+  const [isRegistrationRequest, setIsRegistrationRequest] = React.useState(false);
 
   useEffect(() => {
     const getResult = async () => {
-      if (selfieCheckDataToRequest?.selfieSrc && selfieCheckDataToRequest?.documentSrc) {
-        setLoading({status: true, text: 'Сравниваем...'});
+      const dataToRequest = await selfieCheckDataToRequest;
+      if (dataToRequest?.selfieSrc && dataToRequest?.documentSrc) {
         const response = await Api.splitSelfiePassportCheck({
-          selfieFile: selfieCheckDataToRequest.selfieFile,
-          documentFile: selfieCheckDataToRequest.documentFile,
-          selfieSrc: selfieCheckDataToRequest.selfieSrc,
-          documentSrc: selfieCheckDataToRequest.documentSrc,
+          selfieFile: dataToRequest.selfieFile,
+          documentFile: dataToRequest.documentFile,
+          selfieSrc: dataToRequest.selfieSrc,
+          documentSrc: dataToRequest.documentSrc,
         });
         setLoading({status: false, text: ''});
         setResult(response);
@@ -33,21 +40,34 @@ export const PassportRegistrationSelfie = () => {
   }, [selfieCheckDataToRequest]);
 
   return (
-    <Swiper pagination={true} autoHeight observer observeParents modules={[Pagination]} className="mySwiper"
-            onActiveIndexChange={({activeIndex}) => {
-              setActiveIndex(activeIndex);
-            }
-            }>
-      <SwiperSlide>
-        {activeIndex === 0 && <PassportScreen setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/> }
-      </SwiperSlide>
-      <SwiperSlide>
-        {activeIndex === 1 && <RegistrationScreen/> }
-      </SwiperSlide>
-      <SwiperSlide>
-        {activeIndex === 2 && <SelfieScreen setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/>}
-      </SwiperSlide>
-      {result && <SwiperSlide><SelfieCheck result={result}/></SwiperSlide>}
-    </Swiper>
+    <>
+      {
+        isSelfieRequest && result ? (
+          <Swiper initialSlide={2} pagination={true} observer observeParents modules={[Pagination]}>
+            <SwiperSlide>
+              <PassportScreen selfieCheckDataToRequest={selfieCheckDataToRequest} passportResult={passportResult}/>
+            </SwiperSlide>
+            <SwiperSlide>
+              <RegistrationScreen registrationResult={registrationResult}/>
+            </SwiperSlide>
+            <SwiperSlide>
+              <SelfieScreen selfieResult={selfieResult}/>
+            </SwiperSlide>
+            {passportResult?.doc_type === 'passport_main' && (
+              <SwiperSlide><SelfieCheck result={result}/></SwiperSlide>
+            )}
+          </Swiper>
+        ) : isRegistrationRequest ? (
+          <SelfieScreen setSelfieResult={setSelfieResult} setIsSelfieRequest={setIsSelfieRequest}
+                        setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/>
+        ) : isPassportRequest ? (
+          <RegistrationScreen setRegistrationResult={setRegistrationResult}
+                              setIsRegistrationRequest={setIsRegistrationRequest}/>
+        ) : (
+          <PassportScreen setIsPassportRequest={setIsPassportRequest} setPassportResult={setPassportResult}
+                          setSelfieCheckDataToRequest={setSelfieCheckDataToRequest}/>
+        )
+      }
+    </>
   );
 };

@@ -5,12 +5,13 @@ import {base64ToFile} from '../../utils/base64ToFile.js';
 import Passport from '../../components/Passport/Passport.jsx';
 import {Button} from '../../components/Button/Button.jsx';
 import circle from '../../assets/images/cirlce.svg';
+import {useOutletContext} from 'react-router-dom';
 
 const videoConstraints = {
   width: 1920,
   height: 1080,
-  facingMode: { exact: "environment" }
-  // facingMode: 'user',
+  // facingMode: { exact: "environment" }
+  facingMode: 'user',
 };
 
 const docType = 'passport_main';
@@ -24,6 +25,7 @@ export const PassportScreen = ({
                                }) => {
   const webcamRef = React.useRef(null);
   const [result, setResult] = React.useState(null);
+  const {setLoading} = useOutletContext();
   const passportWorker = React.useMemo(
     () => new Worker(new URL('./worker.js', import.meta.url)),
     [],
@@ -32,10 +34,14 @@ export const PassportScreen = ({
   useEffect(() => {
     passportWorker.onmessage = (event) => {
       if (event && event.data) {
+        if (window.location.pathname === '/passport') {
+          setLoading({status: false, text: ''});
+        } else {
+          setSelfieCheckDataToRequest?.((prev) => ({...prev, documentFile: file, documentSrc: base64}));
+        }
         const {response, file, base64} = event.data;
         setResult(response?.data?.items[0]);
         setPassportResult?.(response?.data?.items[0]);
-        setSelfieCheckDataToRequest?.((prev) => ({...prev, documentFile: file, documentSrc: base64}));
       }
     };
   }, [passportWorker]);
@@ -56,6 +62,9 @@ export const PassportScreen = ({
     // const base64 = await URLtoDataURL(passport)
     const file = base64ToFile(base64, 'passport.jpeg');
     getData(file, base64);
+    if (window.location.pathname === '/passport') {
+      setLoading({status: true, text: 'Распознаем...'});
+    }
   }, [webcamRef]);
 
   return (

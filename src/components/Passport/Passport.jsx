@@ -5,11 +5,11 @@ import {getNumericConfidence} from '../../utils/getNumericConfidence.js';
 import Badge from '../Badge/Badge.jsx';
 import {v4 as uuidv4} from 'uuid';
 
-const Passport = ({item, docType, imageSrc}) => {
+const Passport = ({item, docType, imageSrc, isRegistration}) => {
   if (item?.doc_type !== docType) return (
     <div className={style.error}>
       <img className={style.errorImage} src={imageSrc} alt=""/>
-      <h1>Извините, на фото не виден паспорт.</h1>
+      <h1>Извините, на фото не {isRegistration ? 'видна прописка' : 'виден паспорт'}.</h1>
     </div>
   );
   const fields = Mapper.mapRecognizedDataToItems(item || item, item?.doc_type || item?.doc_type)
