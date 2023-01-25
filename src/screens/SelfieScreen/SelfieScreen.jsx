@@ -10,8 +10,9 @@ import {useOutletContext} from 'react-router-dom';
 import Webcam from 'react-webcam';
 
 const videoConstraints = {
-  width: 1920,
-  height: 1080,
+  // width: { min: 640, max: 640 },
+  // height: { min: 480, max: 480 },
+  // aspectRatio: 640 / 480,
   facingMode: 'user',
 };
 
@@ -20,15 +21,33 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest, setSelfieResult, setI
   const [faceClass, setFaceClass] = React.useState('');
   const {setLoading} = useOutletContext();
   const [result, setResult] = React.useState(null);
-
+  const [shape, setShape] = React.useState(null);
   const isFace = useRef(null);
   const videoRef = useRef(null);
   const screenShotIntervalId = useRef(null);
   const faceDetectionIntervalId = useRef(null);
 
   useEffect(() => {
-    if (!result || !selfieResult) {
+    if (videoRef.current?.video) {
+      const intervalID = setInterval(() => {
+        const base64 = videoRef.current?.getScreenshot();
+        const image = new Image();
+        image.src = base64;
+        image.onload = function () {
+          setShape({
+            widthConst: 640 / this.width,
+            heightConst: 480 / this.height,
+          });
+          clearInterval(intervalID);
+        };
+      }, 100);
+    }
+  }, []);
+
+  useEffect(() => {
+    if ((!result || !selfieResult) && shape) {
       videoRef && loadModels();
+
       screenShotIntervalId.current = setInterval(() => {
         const src = videoRef.current?.getScreenshot();
         if (isFace.current) {
@@ -41,13 +60,14 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest, setSelfieResult, setI
           });
         }
       }, 500);
-    }
 
-    return () => {
-      clearInterval(screenShotIntervalId.current);
-      clearInterval(faceDetectionIntervalId.current);
-    };
-  }, []);
+      return () => {
+        clearInterval(screenShotIntervalId.current);
+        clearInterval(faceDetectionIntervalId.current);
+      };
+    }
+  }, [shape]);
+
   const loadModels = () => {
     const MODEL_URL = '/models';
     Promise.all([
@@ -57,7 +77,6 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest, setSelfieResult, setI
       faceDetection();
     });
   };
-
   const faceDetection = async () => {
     faceDetectionIntervalId.current = setInterval(async () => {
       const detection = videoRef.current?.video && await faceapi.detectSingleFace(videoRef.current.video, new faceapi.TinyFaceDetectorOptions({
@@ -65,16 +84,15 @@ export const SelfieScreen = ({setSelfieCheckDataToRequest, setSelfieResult, setI
         scoreThreshold: 0.3,
       })).withFaceLandmarks();
       const landmarks = detection?.landmarks;
-      const nose = landmarks?.getNose();
-
-      const isNoseTurned = !(nose?.every((point) => point.x < 385 && point.x > 270 && point.y < 380 && point.y > 120));
-
-      if (isNoseTurned) {
-        isFace.current = false;
-        setFaceClass('');
-      } else {
-        isFace.current = true;
-        setFaceClass(style.face);
+      if (shape) {
+        const isNoseTurned = !(landmarks?.positions[27].x * shape.widthConst < 385 && landmarks?.positions[27].x * shape.widthConst > 270 && landmarks?.positions[27].y * shape.heightConst < 300 && landmarks?.positions[27].y * shape.heightConst > 120);
+        if (isNoseTurned) {
+          isFace.current = false;
+          setFaceClass('');
+        } else {
+          isFace.current = true;
+          setFaceClass(style.face);
+        }
       }
     }, 100);
   };
