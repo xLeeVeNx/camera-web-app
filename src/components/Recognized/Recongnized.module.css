@@ -1,3 +1,7 @@
+.items {
+    width: 100%;
+}
+
 .item {
     display: flex;
     justify-content: space-between;
@@ -20,8 +24,17 @@
     object-fit: cover;
 }
 
-.margin {
+.margin:not(:last-child) {
     margin-bottom: 25px;
+}
+
+.title {
+    margin-top: 25px;
+    text-align: center;
+}
+
+.image {
+    margin: 0 auto;
 }
 
 /*@media (max-width: 425px) {*/

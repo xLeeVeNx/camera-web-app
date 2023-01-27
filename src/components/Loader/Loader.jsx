@@ -1,11 +1,11 @@
 import styles from "./Loader.module.css";
 import spinner from "../../assets/images/spinner.svg";
 
-export const Loader = ({ text }) => {
+export const Loader = ({ children }) => {
   return (
     <div className={styles.loader}>
       <img src={spinner} className={styles.icon} alt="Загрузка" />
-      {text && <p className={styles.text}>{text}</p>}
+      {children && <p className={styles.text}>{children}</p>}
     </div>
   );
 };

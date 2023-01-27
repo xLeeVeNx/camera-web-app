@@ -5,162 +5,165 @@ import {Api} from '../../api/api.js';
 import circle from '../../assets/images/cirlce.svg';
 import {base64ToFile} from '../../utils/base64ToFile.js';
 import {Selfie} from '../../components/Selfie/Selfie.jsx';
-import {Button} from '../../components/Button/Button.jsx';
-import {useOutletContext} from 'react-router-dom';
 import Webcam from 'react-webcam';
+import {SINGLE_SELFIE_TYPE} from '../../constants/constants.js';
 
 const videoConstraints = {
-  // width: { min: 640, max: 640 },
-  // height: { min: 480, max: 480 },
-  // aspectRatio: 640 / 480,
   facingMode: 'user',
 };
 
-export const SelfieScreen = ({setSelfieCheckDataToRequest, setSelfieResult, setIsSelfieRequest, selfieResult}) => {
-  const [screenShots, setScreenShots] = React.useState([]);
-  const [faceClass, setFaceClass] = React.useState('');
-  const {setLoading} = useOutletContext();
-  const [result, setResult] = React.useState(null);
-  const [shape, setShape] = React.useState(null);
-  const isFace = useRef(null);
-  const videoRef = useRef(null);
-  const screenShotIntervalId = useRef(null);
-  const faceDetectionIntervalId = useRef(null);
+export const SelfieScreen = ({
+                               setRequestData,
+                               requestResult,
+                               setRequested,
+                               setRequestResult,
+                               setLoading,
+                               componentType,
+                             }) => {
+    const [screenShots, setScreenShots] = React.useState([]);
+    const [faceClass, setFaceClass] = React.useState('');
+    const [result, setResult] = React.useState(null);
+    const [sizes, setSizes] = React.useState(null);
+    const isFace = useRef(null);
+    const videoRef = useRef(null);
 
-  useEffect(() => {
-    if (videoRef.current?.video) {
-      const intervalID = setInterval(() => {
-        const base64 = videoRef.current?.getScreenshot();
-        const image = new Image();
-        image.src = base64;
-        image.onload = function () {
-          setShape({
-            widthConst: 640 / this.width,
-            heightConst: 480 / this.height,
-          });
-          clearInterval(intervalID);
-        };
-      }, 100);
-    }
-  }, []);
+    const screenShotIntervalId = useRef(null);
+    const faceDetectionIntervalId = useRef(null);
 
-  useEffect(() => {
-    if ((!result || !selfieResult) && shape) {
-      videoRef && loadModels();
+    const tinyFaceDetector = React.useRef(null);
 
-      screenShotIntervalId.current = setInterval(() => {
-        const src = videoRef.current?.getScreenshot();
-        if (isFace.current) {
-          setScreenShots(prev => {
-            const newScreenShots = [...prev, src];
+    const onLoadedData = () => {
+      const base64 = videoRef.current.getScreenshot();
+      const image = new Image();
+      image.src = base64;
+      image.onload = function () {
+        setSizes({
+          x: 640 / this.width,
+          y: 480 / this.height,
+        });
+      };
+    };
+
+    useEffect(() => {
+      if (!result || !requestResult[componentType] && sizes) {
+        videoRef && loadModels();
+
+        screenShotIntervalId.current = setInterval(() => {
+          const screenshot = videoRef.current?.getScreenshot();
+          if (isFace.current) {
+            const newScreenShots = [...screenShots, screenshot];
             if (newScreenShots.length > 5) {
               newScreenShots.shift();
             }
-            return newScreenShots;
-          });
-        }
-      }, 500);
+            setScreenShots(newScreenShots);
+          }
+        }, 500);
 
-      return () => {
+        return () => {
+          clearInterval(screenShotIntervalId.current);
+          clearInterval(faceDetectionIntervalId.current);
+        };
+      }
+    }, [sizes]);
+
+    const loadModels = () => {
+      const MODEL_URL = '/models';
+      Promise.all([
+        faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+        faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+      ]).then(() => {
+        tinyFaceDetector.current = new faceapi.TinyFaceDetectorOptions({
+          inputSize: 128,
+          scoreThreshold: 0.3,
+        });
+        faceDetection();
+      });
+    };
+    const faceDetection = async () => {
+      faceDetectionIntervalId.current = setInterval(async () => {
+        const detection = videoRef.current?.video &&
+          await faceapi
+            .detectSingleFace(videoRef.current.video, tinyFaceDetector.current)
+            .withFaceLandmarks();
+
+        const position = detection?.landmarks?.positions[27];
+        const {x, y} = position || {x: 0, y: 0};
+
+        if (sizes && position) {
+          const isStraightFace = x * sizes.x < 385 && x * sizes.x > 270 && y * sizes.y < 300 && y * sizes.y > 120;
+          isFace.current = isStraightFace;
+          setFaceClass(isStraightFace ? style.face : '');
+        }
+      }, 100);
+    };
+
+    const capture = React.useCallback(
+      async () => {
+
+        setRequested?.((prev) => ({...prev, [componentType]: true}));
+        setLoading({status: true, text: 'Сравниваем...'});
         clearInterval(screenShotIntervalId.current);
         clearInterval(faceDetectionIntervalId.current);
-      };
-    }
-  }, [shape]);
 
-  const loadModels = () => {
-    const MODEL_URL = '/models';
-    Promise.all([
-      faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
-      faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
-    ]).then(() => {
-      faceDetection();
-    });
-  };
-  const faceDetection = async () => {
-    faceDetectionIntervalId.current = setInterval(async () => {
-      const detection = videoRef.current?.video && await faceapi.detectSingleFace(videoRef.current.video, new faceapi.TinyFaceDetectorOptions({
-        inputSize: 128,
-        scoreThreshold: 0.3,
-      })).withFaceLandmarks();
-      const landmarks = detection?.landmarks;
-      if (shape) {
-        const isNoseTurned = !(landmarks?.positions[27].x * shape.widthConst < 385 && landmarks?.positions[27].x * shape.widthConst > 270 && landmarks?.positions[27].y * shape.heightConst < 300 && landmarks?.positions[27].y * shape.heightConst > 120);
-        if (isNoseTurned) {
-          isFace.current = false;
-          setFaceClass('');
-        } else {
-          isFace.current = true;
-          setFaceClass(style.face);
-        }
-      }
-    }, 100);
-  };
+        const detection = videoRef.current?.video &&
+          await faceapi
+            .detectSingleFace(videoRef.current.video, tinyFaceDetector.current)
+            .withFaceLandmarks();
 
-  const capture = React.useCallback(
-    async () => {
-      setIsSelfieRequest?.(true);
-      setLoading({status: true, text: 'Сравниваем...'});
-      clearInterval(screenShotIntervalId.current);
-      clearInterval(faceDetectionIntervalId.current);
+        let newScreenShots = [...screenShots];
 
-      const detection = videoRef.current?.video && await faceapi.detectSingleFace(videoRef.current.video, new faceapi.TinyFaceDetectorOptions({
-        inputSize: 128,
-        scoreThreshold: 0.3,
-      })).withFaceLandmarks();
+        if (detection) {
+          const screenshot = videoRef.current.getScreenshot();
+          newScreenShots = [...screenShots, screenshot];
 
-      let newScreenShots = [...screenShots];
+          if (newScreenShots.length > 5) {
+            newScreenShots.shift();
+          }
 
-      if (detection) {
-        const src = videoRef.current.getScreenshot();
-        newScreenShots = [...screenShots, src];
-
-        if (newScreenShots.length > 5) {
-          newScreenShots.shift();
+          setScreenShots(newScreenShots);
         }
 
-        setScreenShots(newScreenShots);
-      }
+        const files = newScreenShots.map((screenShot) => base64ToFile(screenShot, 'selfie.jpeg'));
+        const response = await Api.batchLiveness(files, newScreenShots);
 
-      const files = newScreenShots.map((screenShot) => base64ToFile(screenShot, 'selfie.jpeg'));
-      const response = await Api.batchLiveness(files, newScreenShots);
+        if (componentType === SINGLE_SELFIE_TYPE) {
+          setLoading({status: false, text: ''});
+        }
 
-      if (window.location.pathname === '/selfie') {
-        setLoading({status: false, text: ''});
-      }
+        setResult(response);
+        setRequestResult?.((prev) => ({...prev, [componentType]: response}));
 
-      if (setSelfieCheckDataToRequest) {
-        const selfieSrc = newScreenShots[newScreenShots.length - 1];
-        const selfieFile = base64ToFile(selfieSrc, 'selfie.jpeg');
+        if (setRequestData) {
+          const selfieSrc = newScreenShots[newScreenShots.length - 1];
+          const selfieFile = base64ToFile(selfieSrc, 'selfie.jpeg');
 
-        setSelfieCheckDataToRequest(prev => ({
-          ...prev,
-          selfieFile,
-          selfieSrc,
-        }));
-      }
-      setResult(response);
-      setSelfieResult?.(response);
-    });
+          setRequestData(prev => ({
+            ...prev,
+            selfieFile,
+            selfieSrc,
+          }));
+        }
+      }, [videoRef, screenShots, componentType, setRequestData, setRequested, setLoading, setRequestResult]);
 
-  return (
-    <>
-      <div className={style.selfie}>
+    return (
+      <>
         {
-          result || selfieResult ? (
-            <Selfie items={result || selfieResult}/>
+          result || requestResult && requestResult[componentType] ? (
+            <Selfie items={result || requestResult[componentType]}/>
           ) : (
             <>
               <h2 className="title">Селфи</h2>
               <div className="subtitle">Расположите лицо в рамку</div>
               <Webcam className={`video ${style.video} ${faceClass}`} ref={videoRef} videoConstraints={videoConstraints}
                       screenshotFormat="image/jpeg" autoPlay audio={false} playsInline mirrored
-                      forceScreenshotSourceSize imageSmoothing={false} screenshotQuality={1}/>
-              <Button onClick={capture}><img src={circle} alt="Круг"/></Button>
+                      forceScreenshotSourceSize imageSmoothing={false} screenshotQuality={1}
+                      onLoadedData={onLoadedData}
+              />
+              <button className="reset-button mt-30" onClick={capture}><img src={circle} alt="Круг"/></button>
             </>
           )
         }
-      </div>
-    </>
-  );
-};
+      </>
+    );
+  }
+;

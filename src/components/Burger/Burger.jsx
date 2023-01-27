@@ -1,21 +1,21 @@
 import React from 'react';
 import style from './Burger.module.css';
-import burger from '../../assets/images/burger.svg';
-import close from '../../assets/images/close.svg';
 
-export const Burger = ({isOpen = false, onClick}) => {
-  const handleOnClick = () => {
-    onClick?.();
+export const Burger = ({isOpen = false, onToggle, children}) => {
+  const handleOnToggle = () => {
+    onToggle?.();
   };
 
-  const classNames = `${style.button} ${isOpen ? style.opened : ''}`;
-  const alt = isOpen ? 'Закрыть' : 'Открыть';
-  const src = isOpen ? close : burger;
+  const classNames = `${style.burger} ${isOpen ? style.active : ''}`;
 
   return (
-    <button className={classNames} onClick={handleOnClick}>
-      <img src={src} alt={alt}/>
-      {!isOpen && 'Меню'}
+    <button className={classNames} onClick={handleOnToggle}>
+      <div>
+        <span className={style.line}></span>
+        <span className={style.line}></span>
+        <span className={style.line}></span>
+      </div>
+      {children && <span className={style.text}>{children}</span>}
     </button>
   );
 };

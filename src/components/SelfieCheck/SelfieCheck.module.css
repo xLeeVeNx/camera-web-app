@@ -1,13 +1,3 @@
-.selfieCheck {
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    margin-top: 90px;
-    padding: 0 0 40px;
-    width: 100%;
-}
-
-
 .item {
     display: grid;
     grid-template-columns: repeat(2, 1fr);

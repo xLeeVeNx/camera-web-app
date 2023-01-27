@@ -1,0 +1,20 @@
+@font-face {
+    font-family: 'TT_Norms_Pro_Regular';
+    font-weight: 400;
+    font-style: normal;
+    src: local('Quicksand-Regular'),
+    url('../assets/fonts/TT_Norms_Pro_Regular.woff2') format('woff2'),
+    url('../assets/fonts/TT_Norms_Pro_Regular.woff') format('woff');
+    font-display: swap;
+}
+
+
+@font-face {
+    font-family: 'TT_Norms_Pro_Medium';
+    font-weight: 500;
+    font-style: normal;
+    src: local('Quicksand-Regular'),
+    url('../assets/fonts/TT_Norms_Pro_Medium.woff2') format('woff2'),
+    url('../assets/fonts/TT_Norms_Pro_Medium.woff') format('woff');
+    font-display: swap;
+}

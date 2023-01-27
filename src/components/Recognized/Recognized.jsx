@@ -1,24 +1,25 @@
 import React from 'react';
-import style from './Passport.module.css';
+import style from './Recongnized.module.css';
 import {Mapper} from '../../utils/mapper.js';
 import {getNumericConfidence} from '../../utils/getNumericConfidence.js';
 import Badge from '../Badge/Badge.jsx';
 import {v4 as uuidv4} from 'uuid';
 
-const Passport = ({item, docType, imageSrc, isRegistration}) => {
-  if (item?.doc_type !== docType) return (
-    <div className={style.error}>
-      <img className={style.errorImage} src={imageSrc} alt=""/>
-      <h1>Извините, на фото не {isRegistration ? 'видна прописка' : 'виден паспорт'}.</h1>
-    </div>
+const Recognized = ({items, docType, imageSrc, isRegistration}) => {
+  const item = items.length && items[0];
+  if (item?.doc_type !== docType || !item) return (
+    <>
+      <img className={style.image} src={imageSrc} alt={`${isRegistration ? 'Прописка' : 'Паспорт'}`}/>
+      <h1 className={style.title}>Извините, на фото не {isRegistration ? 'видна прописка' : 'виден паспорт'}.</h1>
+    </>
   );
   const fields = Mapper.mapRecognizedDataToItems(item?.fields, item?.doc_type || item?.doc_type)
   const isEmptyField = fields.every((field) => field.name === '');
   if (isEmptyField) return (
-    <div className={style.error}>
-      <img className={style.errorImage} src={imageSrc} alt=""/>
-      <h1>Извините, на фото не видно все поля паспорта.</h1>
-    </div>
+    <>
+      <img className={style.image} src={imageSrc} alt=""/>
+      <h1 className={style.title}>Извините, на фото не видны все поля {isRegistration ? 'прописки' : 'паспорта'}.</h1>
+    </>
   )
   const getConfidence = ({confidenceNumber}) => {
     if (confidenceNumber === 0) return 'Поле не найдено';
@@ -27,7 +28,7 @@ const Passport = ({item, docType, imageSrc, isRegistration}) => {
   };
 
   return (
-    <>
+    <div className={style.items}>
       <div className={`${style.item} ${style.margin}`}>
         <div className="text">Поля и Значения</div>
         <div className="text">Уверенность</div>
@@ -63,8 +64,8 @@ const Passport = ({item, docType, imageSrc, isRegistration}) => {
           </React.Fragment>
         ))
       }
-    </>
+    </div>
   );
 };
 
-export default Passport;
+export default Recognized;

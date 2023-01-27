@@ -20,11 +20,7 @@ export const RootScreen = () => {
 
   return (
     <div className="app">
-      {loading.status && <div className="loader"><Loader text={loading.text}/></div> }
-      <Burger isOpen={isMenuOpen} onClick={handleMenuToggle}/>
-      <div className={`${style.menu} ${isMenuOpen ? style.opened : ''}`}>
-        <Navbar className={style.navbar} onItemClick={handleMenuToggle} />
-      </div>
+
       <Outlet context={{setLoading}}/>
     </div>
   );

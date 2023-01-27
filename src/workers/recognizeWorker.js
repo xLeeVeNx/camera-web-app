@@ -1,7 +1,4 @@
-import {Api} from '../../api/api.js';
-import {base64ToFile} from '../../utils/base64ToFile.js';
-import passport from '../../assets/images/passport.jpg';
-import {URLtoDataURL} from '../../utils/URLtoDataURL.js';
+import {Api} from '../api/api.js';
 
 /* eslint-disable no-restricted-globals */
 self.onmessage = async (event) => {

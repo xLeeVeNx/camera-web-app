@@ -1,8 +1,53 @@
 .menu {
+    position: absolute;
+    top: 90px;
+    left: 0;
+    transform: translateX(-200%);
     display: flex;
     flex-direction: column;
     align-items: center;
+    transition: all 0.3s linear;
+    height: 100%;
+    width: 100%;
+    background-color: #727272;
+    z-index: 5;
+}
+
+.menu.isApp {
     justify-content: center;
-    height: 100vh;
-    padding: 0 15px;
+    position: static;
+    height: calc(100vh - 60px); /* 30px paddingTop + 30 paddingBottom */
+}
+
+.menu.active {
+    transform: translateX(0);
+}
+
+.item {
+    max-width: 340px;
+    width: 100%;
+    max-height: 120px;
+    height: 100%;
+}
+
+.item:not(:last-child) {
+    margin-bottom: 30px;
+}
+
+.button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1356A8;
+    border-radius: 16px;
+    height: 100%;
+    width: 100%;
+    font-weight: 600;
+    font-size: 26px;
+    line-height: 34px;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    color: inherit;
+    padding: 0;
 }
