@@ -6,10 +6,7 @@ import circle from '../../assets/images/cirlce.svg';
 import {SINGLE_PASSPORT_TYPE} from '../../constants/constants.js';
 
 const videoConstraints = {
-  width: 1920,
-  height: 1080,
-  // facingMode: {exact: 'environment'},
-  facingMode: 'user',
+  facingMode: {exact: 'environment'},
 };
 
 export const RecognizeScreen = ({
